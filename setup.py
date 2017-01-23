@@ -3,7 +3,7 @@ import re
 
 
 def version():
-    with open('texbib/__init__.py', 'r') as init_file:
+    with open('bibtex/__init__.py', 'r') as init_file:
         _version = re.search('__version__ = \'([^\']+)\'', init_file.read()).group(1)
     return _version
 

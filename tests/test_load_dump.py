@@ -3,7 +3,7 @@ Tests for the parserfuntions `loads` and `dumps` from the bibtex module.
 """
 
 import pytest
-from bibtex import loads, dumps
+from bibtex import load, loads, dump, dumps
 import pyparsing as pp
 
 
@@ -50,20 +50,57 @@ def test_selfconsistency(bibcode, bibdata):
     assert loads(dumps(bibdata)) == bibdata
 
 
+def test_loads_empty():
+    assert loads('') == []
+    assert loads('\n ') == []
+
+
+def test_dumps_empty():
+    assert dumps([]) == ''
+
+
 def test_exception_on_empty_attributes():
    with pytest.raises(pp.ParseException):
-       print(loads('@{title={},author={}}'))
+       loads('@{title={},author={}}')
    with pytest.raises(pp.ParseException):
-       print(loads('@ARTICLE{}'))
+       loads('@ARTICLE{}')
 
 
-def test_exception_on_incomplete_record():
+def test_raise_on_incomplete_record():
    with pytest.raises(pp.ParseException):
        loads('@ARTICLE{label,title={},author={},')
    with pytest.raises(pp.ParseException):
-       loads('@ARTICLE{label,title={,author={}}')
+       loads('@ARTICLE{label,title={},author')
 
-# TODO: make more tests
-#       - missing '='
-#       - unknown Type
-#       - wrong commas
+
+def test_raise_on_missing_syntax():
+   with pytest.raises(pp.ParseException):
+       loads('@ARTICLE{label,title={},author{}}')
+   with pytest.raises(pp.ParseException):
+       loads('@ARTICLE{label,title=,author={}}')
+   with pytest.raises(pp.ParseException):
+       loads('@ARTICLE{label,title={}author={}}')
+
+
+def test_raise_on_maleformed_record():
+    with pytest.raises(KeyError):
+        dumps([{'id': 'foo16', 'author': 'John Doe'}])
+    with pytest.raises(KeyError):
+        dumps([{'type': 'book', 'author': 'John Doe'}])
+    with pytest.raises(KeyError):
+        dumps([{'id': 'bar17', 'type': '', 'author': 'John Doe'}])
+
+
+def test_raise_on_maleformed_strings():
+    with pytest.raises(KeyError):
+        dumps([{'id': 'bar17', 'type': 'bo@ok', 'author': 'John Doe'}])
+    with pytest.raises(KeyError):
+        dumps([{'id': 'bar,17', 'type': 'book', 'author': 'John Doe'}])
+    with pytest.raises(KeyError):
+        dumps([{'id': 'bar17', 'type': 'book', 'aut,hor': 'John Doe'}])
+    with pytest.raises(KeyError):
+        dumps([{'id': 'bar17', 'type': 'book', 'author': '"\'}John Doe'}])
+
+
+def test_real_examples():
+    list(load(open('./tests/examples.bib')))

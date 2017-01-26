@@ -1,6 +1,5 @@
 import pyparsing as pp
-from pyparsing import Word, Group, OneOrMore, Suppress, Optional,\
-                      alphas, alphanums, alphas8bit, punc8bit
+from pyparsing import Word, Group, Suppress
 
 
 def _syntax(bibfile, number, line):
@@ -10,44 +9,84 @@ def _syntax(bibfile, number, line):
 
 
 def bibtex_parser():
-    """Builds a pyparsing expression that can parse bibtex"""
+    """Builds a pyparsing expression that can parse bibtex
+
+    No Arguments. Returns None."""
 
     # define allowed characters for values
-    val_chrs = alphanums + alphas8bit
+    val_chrs = pp.alphanums + pp.alphas8bit
 
-    cite_type = Word(alphas).setParseAction(lambda t: t[0].lower()) # TODO: strict
+    # TODO: strict
+    cite_type = Word(pp.alphas).setParseAction(lambda t: t[0].lower())
 
-    # allow whitespace and punctuation in quoted values; TODO: refactor
-    more = ' !#$%&()*+,-./:;<=>?@[\\]^_`´~|' + punc8bit
-    braced = Suppress('{') + Word(val_chrs+more+'"') + Suppress('}')
+    # allow whitespace and punctuation in quoted values
+    braced = pp.QuotedString('{', endQuoteChar='}', multiline=True)
+    single = pp.QuotedString('"', multiline=True)
+    double = pp.QuotedString("'", multiline=True)
 
     # key; TODO: allow only known keys in strict
     key = Word(val_chrs)
-    value = braced ^ pp.quotedString.setParseAction(pp.removeQuotes)\
-            ^ Word(val_chrs)
+    value = braced | single | double | Word(val_chrs)
 
     # value in braces or in quotes or as singe word
     key_value_pair = key + Suppress('=') + value
 
     citation = Group(Suppress('@') + cite_type
-                     + Suppress('{') + Word(alphanums+'_-') + Suppress(',')
+                     + Suppress('{') + Word(pp.alphanums+'_-') + Suppress(',')
                      + Group(pp.delimitedList(Group(key_value_pair)))
                      + Suppress('}'))
 
-    return OneOrMore(citation)
+    comment = Group(Suppress('@') + pp.Literal('comment') + braced)
+
+    tag_def = Group(Suppress('@') + pp.Literal('string') + braced
+                    + Suppress('{')
+                    + Group(pp.delimitedList(Group(key_value_pair)))
+                    + Suppress('}'))
+
+    bibitem = citation | comment | tag_def
+
+    return pp.OneOrMore(bibitem)
+
 
 
 def read(string):
+    """Parse `string` as bibtex and return a generator that yields citations as dicts.
+    Each dict has a `id` and a `type` entry.
+
+    Arguments:
+    - string: str
+        bibtex formated string
+
+    Returns:
+    - Generator[Dict[str,str]]"""
+    if not string.strip():
+        raise StopIteration
     bibtex = bibtex_parser()
     for cite_type, bib_id, info in bibtex.parseString(string):
         yield dict(list(info) + [('type', cite_type), ('id', bib_id)])
 
 
 def loads(string):
+    """Parse `string` as bibtex and return a list of the citations, each as dict.
+    Each dict has a `id` and a `type` entry.
+
+    Arguments:
+    - string: str
+        bibtex formated string
+
+    Returns:
+    - List[Dict[str,str]]"""
     return list(read(string))
 
 
-def load(path_or_buffer):
-    # bibtex = bibtex_parser()
-    # bibtex.parseFile(path_or_buffer)
-    return
+def load(filelike):
+    """Parse content of filelike as BibTeX and return a list of the citations, each as dict.
+    Each dict has a `id` and a `type` entry.
+
+    Arguments:
+    - filelike: filelike
+        An object that has a `read` method
+
+    Returns:
+    - List[Dict[str,str]]"""
+    return read(filelike.read())

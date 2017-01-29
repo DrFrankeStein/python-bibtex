@@ -8,7 +8,7 @@ The following versioning scheme tells you what you can expect from the current v
 
 * Version 0.1: More or less just a skeleton and won't reliably produce a result.
 * Version 0.2: All the functions described below will be implemented, but not all edge cases will work.
-* Version 0.3: A full implementation of the bibtex language, including tags and comments. But no customisation. <!--TODO: replace foo-->
+* Version 0.3: A full implementation of the bibtex language, including tags and comments. A strict mode. But no customisation. <!--TODO: replace foo-->
 
 If no major problems show up, I will release a stable Version 1.0 after that.
 
@@ -22,14 +22,18 @@ pip install .
 Sometime in the future it will also be available on pypi.
 But maybe under a different name.
 
+### Dependencies
+
+* [pyparsing](http://pyparsing.wikispaces.com/)
+
 ## Usage
 
 ### As a python library
 Simply import the load/loads and dump/dumps functions from the bibtex module,
-as in any other parer module.
+as in any other parser module.
 
 They will return a list of dictionaries.
-Each dictionary represents a reference and will always contain a `type` and a `id` entery.
+Each dictionary represents a reference and will always contain a `type` and a `id` entry.
 
 ```python
 >>> import bibtex
@@ -55,18 +59,10 @@ or
 ```sh
 bib2yaml file.bib
 ```
-generate a `file.json` or `file.json` respectively.
+generate a `file.json` or `file.yaml` respectively.
 
-A special usecase is [pandocs](http://pandoc.org/MANUAL.html#citations) system for specifing references.
+A special use case is [pandocs](http://pandoc.org/MANUAL.html#citations) system for including references.
 This requires as certain structure that can be generated with the `-p`/`--pandoc` command line option.
 ```sh
 bib2yaml -p file.bib
 ```
-Result
-```yaml
-```
-
-
-## Dependencies
-
-* [pyparsing](http://pyparsing.wikispaces.com/)

@@ -25,7 +25,7 @@ def bibtex_parser():
     double = pp.QuotedString("'", multiline=True)
 
     # key; TODO: allow only known keys in strict
-    key = Word(val_chrs)
+    key = Word(val_chrs).setParseAction(lambda t: t[0].lower())
     value = braced | single | double | Word(val_chrs)
 
     # value in braces or in quotes or as singe word
@@ -89,4 +89,4 @@ def load(filelike):
 
     Returns:
     - List[Dict[str,str]]"""
-    return read(filelike.read())
+    return list(read(filelike.read()))

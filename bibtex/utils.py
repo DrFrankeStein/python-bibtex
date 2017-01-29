@@ -1,14 +1,10 @@
-import argparse
-import json
-import yaml
+import os, argparse
 
 from bibtex.reader import load
-from bibtex.writer import dump
 
 
 def bib2yaml():
     """Entry point for the bib2yaml commad line tool"""
-
     argp = argparse.ArgumentParser(
         prog='bib2yaml',
         description='Convert BibTeX references to yaml.')
@@ -19,11 +15,21 @@ def bib2yaml():
 
     args = argp.parse_args()
 
-    print(args)
+    try:
+        import yaml
+    except ImportError:
+        print('bib2yaml: pyyaml is not installed')
+
+    with open(args.infile, 'r') as infile:
+        bib = load(infile)
+
+    with open(os.path.splitext(args.infile)[0] + '.yaml', 'w') as outfile:
+        yaml.dump(bib, outfile, default_flow_style=False)
 
 
 def bib2json():
     """Entry point for the bib2json commad line tool"""
+    import json
 
     argp = argparse.ArgumentParser(
         prog='bib2json',
@@ -33,4 +39,8 @@ def bib2json():
 
     args = argp.parse_args()
 
-    print(args)
+    with open(args.infile, 'r') as infile:
+        bib = load(infile)
+
+    with open(os.path.splitext(args.infile)[0] + '.json', 'w') as outfile:
+        json.dump(bib, outfile, indent=4)

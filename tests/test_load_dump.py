@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 """
 Tests for the parserfuntions `loads` and `dumps` from the bibtex module.
 """
@@ -10,7 +11,7 @@ import pyparsing as pp
 BIBCODE_EXAMPLES = [
     ("""@ArTiCle{SomeLabel,
      author = {Max Mustermann},
-     title=  {Einführung in das Sammeln von Briefmarken},
+     title=  {Einfuehrung in das Sammeln von Briefmarken},
      abstract= {Foo}
      }""",
      [{'type' : 'article',
@@ -37,6 +38,23 @@ BIBCODE_EXAMPLES = [
       'title': 'The Title',
       'type': 'book',
       'year': '1788'}]),
+    ("""
+     @article{bar15,
+         title= Bar,
+         author = {Maya {Musterman}}
+     }
+     @book{foo16,
+         author = {{Max Musterman}},
+         title = Foo
+     }""",
+     [{'author': 'Maya Musterman',
+      'id': 'bar15',
+      'title': 'Bar',
+      'type': 'article'},
+     {'author': 'Max {Musterman}',
+      'id': 'Foo16',
+      'title': 'Foo',
+      'type': 'book'}]),
     ]
 
 
@@ -87,7 +105,7 @@ def test_raise_on_maleformed_record():
         dumps([{'id': 'foo16', 'author': 'John Doe'}])
     with pytest.raises(KeyError):
         dumps([{'type': 'book', 'author': 'John Doe'}])
-    with pytest.raises(KeyError):
+    with pytest.raises(ValueError):
         dumps([{'id': 'bar17', 'type': '', 'author': 'John Doe'}])
 
 

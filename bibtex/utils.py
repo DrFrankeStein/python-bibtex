@@ -26,7 +26,7 @@ def bib2yaml():
     try:
         import yaml
     except ImportError:
-        print('bib2yaml: pyyaml is not installed', file=sys.stderr)
+        sys.stderr.write('bib2yaml: pyyaml is not installed\n')
         sys.exit(1)
 
     with open(args.infile, 'r') as infile:

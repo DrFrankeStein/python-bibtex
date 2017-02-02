@@ -1,24 +1,33 @@
-import os, argparse
+import sys, os, argparse
 
 from bibtex.reader import load
 
 
+def get_argparser(prog_name):
+    argp = argparse.ArgumentParser(
+        prog=prog_name,
+        description='Convert BibTeX references to {}.'
+                    .format(prog_name[-4:]))
+    argp.add_argument('-s', '--strict', action='store_true',
+                      help='strict mode, parses only standard BibTeX')
+    argp.add_argument('-o', '--outfile',
+                      help='custom output file name')
+    argp.add_argument('infile', help='BibTeX file to process')
+    return argp
+
+
 def bib2yaml():
     """Entry point for the bib2yaml commad line tool"""
-    argp = argparse.ArgumentParser(
-        prog='bib2yaml',
-        description='Convert BibTeX references to yaml.')
-
+    argp = get_argparser('bib2yaml')
     argp.add_argument('-p', '--pandoc', action='store_true',
-                      help='Sturcure yaml in pandoc compatible format')
-    argp.add_argument('infile', help='BibTeX file to process')
-
+                      help='sturcure yaml in pandoc compatible format')
     args = argp.parse_args()
 
     try:
         import yaml
     except ImportError:
-        print('bib2yaml: pyyaml is not installed')
+        print('bib2yaml: pyyaml is not installed', file=sys.stderr)
+        sys.exit(1)
 
     with open(args.infile, 'r') as infile:
         bib = load(infile)
@@ -29,15 +38,9 @@ def bib2yaml():
 
 def bib2json():
     """Entry point for the bib2json commad line tool"""
+    args = get_argparser('json').parse_args()
+
     import json
-
-    argp = argparse.ArgumentParser(
-        prog='bib2json',
-        description='Convert BibTeX references to json.')
-
-    argp.add_argument('infile', help='BibTeX file to process')
-
-    args = argp.parse_args()
 
     with open(args.infile, 'r') as infile:
         bib = load(infile)

@@ -12,6 +12,8 @@ def get_argparser(prog_name):
                             'or `stdout` for writing to stdout'))
     argp.add_argument('-p', '--pandoc', action='store_true',
                       help='sturcure output in pandoc compatible form')
+    argp.add_argument('-r', '--readable', action='store_true',
+                      help='add line breaks and indent')
     argp.add_argument('-s', '--strict', action='store_true',
                       help='strict mode, parses only standard BibTeX')
     argp.add_argument('infile',
@@ -51,8 +53,13 @@ def bib2yaml():
     with get_in_buffer(args.infile) as infile:
         bib = load(infile)
 
+    if args.readable:
+        writer_options = {'default_flow_style': False}
+    else:
+        writer_options = {}
+
     with get_out_buffer(args.outfile, args.infile) as outfile:
-        yaml.dump(bib, outfile, default_flow_style=False)
+        yaml.dump(bib, outfile, **writer_options)
 
 
 def bib2json():
@@ -64,5 +71,10 @@ def bib2json():
     with get_in_buffer(args.infile) as infile:
         bib = load(infile)
 
+    if args.readable:
+        writer_options = {'indent': 4}
+    else:
+        writer_options = {}
+
     with get_out_buffer(args.outfile, args.infile) as outfile:
-        json.dump(bib, outfile, indent=4)
+        json.dump(bib, outfile, **writer_options)

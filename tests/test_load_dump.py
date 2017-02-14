@@ -11,7 +11,7 @@ import pyparsing as pp
 BIBCODE_EXAMPLES = [
     ("""@ArTiCle{SomeLabel,
      author = {Max Mustermann},
-     title=  {Einfuehrung in das Sammeln von Briefmarken},
+     title=  {Einführung in das Sammeln von Briefmarken},
      abstract= {Foo}
      }""",
      [{'type' : 'article',
@@ -30,31 +30,31 @@ BIBCODE_EXAMPLES = [
          title = "The Title"
      }""",
      [{'author': 'Maya {Musterman}',
-      'id': 'bar15',
-      'title': 'FOO',
-      'type': 'article'},
-     {'author': 'Max {Musterman}',
-      'id': 'Foo16',
-      'title': 'The Title',
-      'type': 'book',
-      'year': '1788'}]),
+       'id': 'bar15',
+       'title': 'FOO',
+       'type': 'article'},
+      {'author': 'Max {Musterman}',
+       'id': 'Foo16',
+       'title': 'The Title',
+       'type': 'book',
+       'year': '1788'}]),
     ("""
      @article{bar15,
          title= Bar,
-         author = {Maya {Musterman}}
+         author = {Maya Musterman}
      }
      @book{foo16,
          author = {{Max Musterman}},
          title = Foo
      }""",
      [{'author': 'Maya Musterman',
-      'id': 'bar15',
-      'title': 'Bar',
-      'type': 'article'},
-     {'author': 'Max {Musterman}',
-      'id': 'Foo16',
-      'title': 'Foo',
-      'type': 'book'}]),
+       'id': 'bar15',
+       'title': 'Bar',
+       'type': 'article'},
+      {'author': 'Max Musterman',
+       'id': 'foo16',
+       'title': 'Foo',
+       'type': 'book'}]),
     ]
 
 
@@ -110,13 +110,13 @@ def test_raise_on_maleformed_record():
 
 
 def test_raise_on_maleformed_strings():
-    with pytest.raises(KeyError):
+    with pytest.raises(ValueError):
         dumps([{'id': 'bar17', 'type': 'bo@ok', 'author': 'John Doe'}])
-    with pytest.raises(KeyError):
+    with pytest.raises(ValueError):
         dumps([{'id': 'bar,17', 'type': 'book', 'author': 'John Doe'}])
-    with pytest.raises(KeyError):
+    with pytest.raises(ValueError):
         dumps([{'id': 'bar17', 'type': 'book', 'aut,hor': 'John Doe'}])
-    with pytest.raises(KeyError):
+    with pytest.raises(ValueError):
         dumps([{'id': 'bar17', 'type': 'book', 'author': '"\'}John Doe'}])
 
 

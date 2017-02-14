@@ -2,6 +2,8 @@
 
 A simple and maintainable parser for the BibTeX language using pyparsing.
 
+![](https://travis-ci.org/DrFrankeStein/python-bibtex.svg?branch=master)
+
 ## What to expect
 This project is work in progress.
 The following versioning scheme tells you what you can expect from the current version.

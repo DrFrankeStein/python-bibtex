@@ -20,13 +20,14 @@ def bibtex_parser():
     cite_type = Word(pp.alphas).setParseAction(lambda t: t[0].lower())
 
     # allow whitespace and punctuation in quoted values
-    braced = pp.QuotedString('{', endQuoteChar='}', multiline=True)
     single = pp.QuotedString('"', multiline=True)
     double = pp.QuotedString("'", multiline=True)
+    # allow values with multiple braces
+    braced = pp.nestedExpr('{', '}').setParseAction(lambda t: ' '.join(t[0]))
 
     # key; TODO: allow only known keys in strict
     key = Word(val_chrs).setParseAction(lambda t: t[0].lower())
-    value = braced | single | double | Word(val_chrs)
+    value = single | double | Word(val_chrs) | braced
 
     # value in braces or in quotes or as singe word
     key_value_pair = key + Suppress('=') + value

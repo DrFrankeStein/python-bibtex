@@ -4,11 +4,13 @@ from bibtex.reader import load
 
 
 def get_argparser(prog_name):
+    """Utility function to build an ArgumentParser,
+    usable for both `bib2json` and `bib2yaml`"""
     argp = argparse.ArgumentParser(
         prog=prog_name,
         description='Convert BibTeX references to {}.'.format(prog_name[-4:]))
     argp.add_argument('-o', '--outfile', metavar='PATH',
-                      help=('custom output file name'
+                      help=('custom output file name '
                             'or `stdout` for writing to stdout'))
     argp.add_argument('-p', '--pandoc', action='store_true',
                       help='sturcure output in pandoc compatible form')

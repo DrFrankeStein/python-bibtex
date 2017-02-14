@@ -3,4 +3,4 @@ from bibtex.writer import dump, dumps
 
 __all__ = ['load', 'loads', 'dump', 'dumps']
 
-__version__ = '0.1.1'
+__version__ = '0.1.2'

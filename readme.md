@@ -19,8 +19,8 @@ git clone https://github.com/DrFrankeStein/python-bibtex
 cd python-bibtex
 pip install .
 ```
-Sometime in the future it will also be available on pypi.
-But maybe under a different name.
+Sometime in the future it will also be available on pypi,
+but maybe under a different name.
 
 ### Dependencies
 

@@ -6,22 +6,41 @@ from bibtex.reader import load
 def get_argparser(prog_name):
     argp = argparse.ArgumentParser(
         prog=prog_name,
-        description='Convert BibTeX references to {}.'
-                    .format(prog_name[-4:]))
+        description='Convert BibTeX references to {}.'.format(prog_name[-4:]))
+    argp.add_argument('-o', '--outfile', metavar='PATH',
+                      help=('custom output file name'
+                            'or `stdout` for writing to stdout'))
+    argp.add_argument('-p', '--pandoc', action='store_true',
+                      help='sturcure output in pandoc compatible form')
     argp.add_argument('-s', '--strict', action='store_true',
                       help='strict mode, parses only standard BibTeX')
-    argp.add_argument('-o', '--outfile',
-                      help='custom output file name')
-    argp.add_argument('infile', help='BibTeX file to process')
+    argp.add_argument('infile',
+                      help=('BibTeX file to process'
+                            'or `-`/`stdin` for reading from stdin'))
     return argp
+
+
+def get_in_buffer(infn):
+    if infn in ('-', 'stdin'):
+        buf = sys.stdin
+    else:
+        buf = open(infn, 'r')
+    return buf
+
+
+def get_out_buffer(outfn, infn):
+    if not outfn:
+        buf = open(os.path.splitext(infn)[0] + '.json', 'w')
+    elif outfn == 'stdout':
+        buf = sys.stdout
+    else:
+        buf = open(outfn, 'w')
+    return buf
 
 
 def bib2yaml():
     """Entry point for the bib2yaml commad line tool"""
-    argp = get_argparser('bib2yaml')
-    argp.add_argument('-p', '--pandoc', action='store_true',
-                      help='sturcure yaml in pandoc compatible format')
-    args = argp.parse_args()
+    args = get_argparser('bib2yaml').parse_args()
 
     try:
         import yaml
@@ -29,21 +48,21 @@ def bib2yaml():
         sys.stderr.write('bib2yaml: pyyaml is not installed\n')
         sys.exit(1)
 
-    with open(args.infile, 'r') as infile:
+    with get_in_buffer(args.infile) as infile:
         bib = load(infile)
 
-    with open(os.path.splitext(args.infile)[0] + '.yaml', 'w') as outfile:
+    with get_out_buffer(args.outfile, args.infile) as outfile:
         yaml.dump(bib, outfile, default_flow_style=False)
 
 
 def bib2json():
     """Entry point for the bib2json commad line tool"""
-    args = get_argparser('json').parse_args()
+    args = get_argparser('bib2json').parse_args()
 
     import json
 
-    with open(args.infile, 'r') as infile:
+    with get_in_buffer(args.infile) as infile:
         bib = load(infile)
 
-    with open(os.path.splitext(args.infile)[0] + '.json', 'w') as outfile:
+    with get_out_buffer(args.outfile, args.infile) as outfile:
         json.dump(bib, outfile, indent=4)

@@ -1,9 +1,9 @@
 def cite_str(bibitem):
     # TODO: check for maleformed items
     head = '@{item[type]}{{{item[id]},\n\t'.format(item=bibitem)
-    key_value_pairs = ['{} = "{}"'.format(key, val)
-                       for key, val in bibitem.items()
-                       if key not in ('id','type')]
+    key_value_pairs = ['{key} = "{value}"'.format(key=key, value=value)
+                       for key, value in bibitem.items()
+                       if key not in ('id', 'type')]
     return  head + ',\n\t'.join(key_value_pairs) + '\n}'
 
 

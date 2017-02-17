@@ -32,6 +32,7 @@ def bibtex_parser():
     # value in braces or in quotes or as singe word
     key_value_pair = key + Suppress('=') + value
 
+    # TODO: inline comments
     citation = Group(Suppress('@') + cite_type
                      + Suppress('{') + Word(pp.alphanums+'_-') + Suppress(',')
                      + Group(pp.delimitedList(Group(key_value_pair)))
@@ -39,15 +40,10 @@ def bibtex_parser():
 
     comment = Group(Suppress('@') + pp.Literal('comment') + braced)
 
-    tag_def = Group(Suppress('@') + pp.Literal('string') + braced
-                    + Suppress('{')
-                    + Group(pp.delimitedList(Group(key_value_pair)))
-                    + Suppress('}'))
-
-    bibitem = citation | comment | tag_def
+    # TODO: tags
+    bibitem = citation | comment
 
     return pp.OneOrMore(bibitem)
-
 
 
 def read(string):

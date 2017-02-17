@@ -1,6 +1,8 @@
-import sys, os, argparse
+import sys, os
+import argparse
 
 from bibtex.reader import load
+from bibtex import __version__
 
 
 def get_argparser(prog_name):
@@ -8,7 +10,10 @@ def get_argparser(prog_name):
     usable for both `bib2json` and `bib2yaml`"""
     argp = argparse.ArgumentParser(
         prog=prog_name,
-        description='Convert BibTeX references to {}.'.format(prog_name[-4:]))
+        description=('Convert BibTeX references to {format}.'
+                     .format(format=prog_name[-4:])))
+    argp.add_argument('--version', action='version',
+                      version='python-bibtex {v}'.format(v=__version__))
     argp.add_argument('-o', '--outfile', metavar='PATH',
                       help=('custom output file name '
                             'or `stdout` for writing to stdout'))

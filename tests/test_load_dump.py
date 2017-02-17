@@ -116,8 +116,6 @@ def test_raise_on_maleformed_strings():
         dumps([{'id': 'bar,17', 'type': 'book', 'author': 'John Doe'}])
     with pytest.raises(ValueError):
         dumps([{'id': 'bar17', 'type': 'book', 'aut,hor': 'John Doe'}])
-    with pytest.raises(ValueError):
-        dumps([{'id': 'bar17', 'type': 'book', 'author': '"\'}John Doe'}])
 
 
 def test_real_examples():

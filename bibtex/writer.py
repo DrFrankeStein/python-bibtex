@@ -7,11 +7,11 @@ def cite_str(bibitem):
             or any(not _valid(key) for key in bibitem):
         raise ValueError
 
-    head = '@{item[type]}{{{item[id]},\n\t'.format(item=bibitem)
+    head = '@{item[type]}{{{item[id]},\n    '.format(item=bibitem)
     key_value_pairs = ['{key} = "{value}"'.format(key=key, value=value)
                        for key, value in bibitem.items()
                        if key not in ('id', 'type')]
-    return head + ',\n\t'.join(key_value_pairs) + '\n}'
+    return head + ',\n    '.join(key_value_pairs) + '\n}'
 
 
 def write(bib):

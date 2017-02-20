@@ -1,11 +1,22 @@
 from setuptools import setup
-import re
+import sys, re
 
 
 def version():
     with open('bibtex/__init__.py', 'r') as init_file:
-        _version = re.search('__version__ = \'([^\']+)\'', init_file.read()).group(1)
+        _version = re.search('__version__ = \'([^\']+)\'',
+                             init_file.read()).group(1)
     return _version
+
+
+def requirements():
+    req = {
+        'yaml': ['pyyaml'],
+        'test': ['pytest'],
+    }
+    if sys.version_info < (2, 7):
+        req['cli']: ['argparse']
+    return req
 
 
 setup(
@@ -21,23 +32,13 @@ setup(
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Science/Research',
         'Topic :: Text Processing :: Markup :: LaTeX',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.6',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
-        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
-    ],
+        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)'
+    ] + ['Programming Language :: Python :: {}'.format(x) for x in
+         '2 2.6 2.7 3 3.3 3.4 3.5 3.6'.split()],
     keywords='bibtex latex',
     packages=['bibtex'],
-    install_requires=['pyparsing'],
-    extras_require={
-        'yaml': ['pyyaml'],
-        'test': ['pytest'],
-    },
+    install_requires=['pyparsing', 'setuptools'],
+    extras_require=requirements(),
     entry_points={
         'console_scripts': [
             'bib2yaml=bibtex.utils:bib2yaml',

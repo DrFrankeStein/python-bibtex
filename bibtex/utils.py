@@ -1,5 +1,11 @@
 import sys, os
-import argparse
+try:
+    import argparse
+except ImportError:
+    # argparse is not in the stl for python < 2.7
+    sys.stderr.write('bib2yaml: argparse is not installed\n')
+    sys.exit(1)
+
 
 from bibtex.reader import load
 from bibtex import __version__

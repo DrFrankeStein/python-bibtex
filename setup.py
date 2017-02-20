@@ -15,7 +15,7 @@ def requirements():
         'test': ['pytest'],
     }
     if sys.version_info < (2, 7):
-        req['cli']: ['argparse']
+        req['cli'] = ['argparse']
     return req
 
 
@@ -33,7 +33,7 @@ setup(
         'Intended Audience :: Science/Research',
         'Topic :: Text Processing :: Markup :: LaTeX',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)'
-    ] + ['Programming Language :: Python :: {}'.format(x) for x in
+    ] + ['Programming Language :: Python :: {v}'.format(v=x) for x in
          '2 2.6 2.7 3 3.3 3.4 3.5 3.6'.split()],
     keywords='bibtex latex',
     packages=['bibtex'],

@@ -47,8 +47,8 @@ def bibtex_parser():
 
 
 def read(string):
-    """Parse `string` as bibtex and return a generator that yields citations as dicts.
-    Each dict has a `id` and a `type` entry.
+    """Parse `string` as bibtex and return a generator that yields citations
+    as dicts. Each dict has a `id` and a `type` entry.
 
     Arguments:
     - string: str
@@ -64,8 +64,8 @@ def read(string):
 
 
 def loads(string):
-    """Parse `string` as bibtex and return a list of the citations, each as dict.
-    Each dict has a `id` and a `type` entry.
+    """Parse `string` as bibtex and return a list of the citations,
+    each as dict. Each dict has a `id` and a `type` entry.
 
     Arguments:
     - string: str
@@ -77,8 +77,8 @@ def loads(string):
 
 
 def load(filelike):
-    """Parse content of filelike as BibTeX and return a list of the citations, each as dict.
-    Each dict has a `id` and a `type` entry.
+    """Parse content of filelike as BibTeX and return a list of the citations,
+    each as dict. Each dict has a `id` and a `type` entry.
 
     Arguments:
     - filelike: filelike

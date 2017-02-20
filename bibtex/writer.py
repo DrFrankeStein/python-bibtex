@@ -19,7 +19,8 @@ def write(bib):
 
     Arguments:
     - bib: List[Dict[str,str]]
-        list of  citations, each citation must be a dict with an `id` and a `type` entry
+        List of  citations,
+        a citation is a Dict[str, str] with `id` and `type` entries
 
     Returns:
     - Generator[str]"""
@@ -32,7 +33,8 @@ def dumps(bib):
 
     Arguments:
     - bib: List[Dict[str,str]]
-        list of  citations, each citation must be a dict with an `id` and a `type` entry
+        List of  citations,
+        a citation is a Dict[str, str] with `id` and `type` entries
 
     Returns:
     - BibTeX formated string: str"""
@@ -44,7 +46,8 @@ def dump(bib, filelike):
 
     Arguments:
     - bib: List[Dict[str,str]]
-        list of  citations, each citation must be a dict with an `id` and a `type` entry
+        List of  citations,
+        a citation is a Dict[str, str] with `id` and `type` entries
     - filelike: filelike
         An object that has a `write` method
 
